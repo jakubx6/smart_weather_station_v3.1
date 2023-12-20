@@ -1,0 +1,6 @@
+Flask
+SQLAlchemy
+gunicorn
+PyMySQL
+coloredlogs
+python-dotenv
