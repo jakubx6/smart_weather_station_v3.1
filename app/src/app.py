@@ -6,6 +6,8 @@ from logger import log
 app = Flask(__name__)
 mySql = Mysql()
 
+ESP_API_TOKEN = os.getenv('ESP_API_TOKEN')
+
 @app.route('/esp', methods=['POST'])
 def esp():
     log.info('Run /esp')

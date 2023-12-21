@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 load_dotenv('.env')
 
 class Mysql:
-    MYSQL_DB_HOST = '167.235.74.145'
-    MYSQL_DB_PORT = '4000'
+    MYSQL_DB_HOST = os.getenv('MYSQL_DB_HOST')
+    MYSQL_DB_PORT = os.getenv('MYSQL_DB_PORT')
     MYSQL_DB_USER = os.getenv('MYSQL_DB_USER')
     MYSQL_DB_PASSWORD = os.getenv('MYSQL_DB_PASSWORD')
-    MYSQL_DB_NAME = 'db_4FX_ts_1700688176'
+    MYSQL_DB_NAME = os.getenv('MYSQL_DB_NAME')
     SELECT = 1
     INSERT = 2
 
