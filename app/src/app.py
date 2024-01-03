@@ -12,8 +12,10 @@ ESP_API_TOKEN = os.getenv('ESP_API_TOKEN')
 def esp():
     log.info('Run /esp')
 
-    buff = request.get_json()
-    log.debug(buff)
+    buff = request.data.decode('utf-8')
+    lines = text_data.split('\n')
+    log.debug(lines[1])
+    log.debug(lines[0])
 
     if 'token' not in request.headers:
         log.error('No header')
