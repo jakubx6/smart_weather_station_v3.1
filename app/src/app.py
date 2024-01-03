@@ -13,7 +13,7 @@ def esp():
     log.info('Run /esp')
 
     buff = request.data.decode('utf-8')
-    lines = text_data.split('\n')
+    lines = buff.split('\n')
     log.debug(lines[1])
     log.debug(lines[0])
 
