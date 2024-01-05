@@ -25,6 +25,7 @@ def esp():
     else:
         log.info('Insert data to DB')
         for row in lines:
+            log.debug(row)
             if not mySql.tryToInsert(row):
                 log.error('Database error')
                 abort(422)
