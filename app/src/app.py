@@ -14,8 +14,7 @@ def esp():
 
     buff = request.data.decode('utf-8')
     lines = buff.split('\n')
-    log.debug(lines[1])
-    log.debug(lines[0])
+    log.debug(buff)
 
     if 'token' not in request.headers:
         log.error('No header')
@@ -25,9 +24,10 @@ def esp():
         abort(401)
     else:
         log.info('Insert data to DB')
-        if not mySql.tryToInsert(buff):
-            log.error('Database error')
-            abort(422)
+        for row in lines:
+            if not mySql.tryToInsert(row):
+                log.error('Database error')
+                abort(422)
     return "xD"
 
 @app.route('/result', methods=['GET'])
