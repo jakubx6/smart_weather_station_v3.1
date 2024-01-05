@@ -45,7 +45,7 @@ class Mysql:
                 result = db.execute(text(data))
             elif type == self.INSERT:
                 result = False
-                db.execute(self.measurement.insert(), [data])
+                db.execute(self.measurement.insert(), data)
                 db.commit()
                 result = True
         except sqlalchemy.exc.OperationalError as e:
