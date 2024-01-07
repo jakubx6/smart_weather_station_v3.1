@@ -3,9 +3,6 @@ import sqlalchemy
 from sqlalchemy import create_engine, text, MetaData, Table, Column, Integer, Numeric, String, TIMESTAMP
 from flask import g
 from logger import log
-from dotenv import load_dotenv
-
-load_dotenv('.env')
 
 class Mysql:
     MYSQL_DB_HOST = os.getenv('MYSQL_DB_HOST')
