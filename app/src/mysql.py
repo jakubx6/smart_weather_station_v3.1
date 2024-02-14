@@ -29,6 +29,24 @@ class Mysql:
         Column('bmp_preasure', Numeric),
     )
 
+    def __init__(self):
+        if "db" not in g:
+            log.info("Connecting to database")
+            engine = create_engine(
+                f"mysql+pymysql://{self.MYSQL_DB_USER}:{self.MYSQL_DB_PASSWORD}@{self.MYSQL_DB_HOST}:{self.MYSQL_DB_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4",
+                pool_pre_ping=True,
+            )
+            g.db = engine.connect()
+
+    def __del__(self):
+        log.info("close_db requested")
+        db = g.pop("db", None)
+        if db is not None:
+            log.info("Closing db connection")
+            db.close()
+        else:
+            log.info("db connection already closed. No action taken.")
+
     def tryToSelect(self, query = 'SELECT NOW()'):
         return self.tryTemplate(self.SELECT, query)
         
@@ -36,7 +54,7 @@ class Mysql:
         return self.tryTemplate(self.INSERT, data)
 
     def tryTemplate(self, type, data):
-        db = self.get_db()
+        db = g.db
         try:
             if type == self.SELECT:
                 result = db.execute(text(data))
@@ -51,25 +69,4 @@ class Mysql:
         except Exception as e:
             msg = f'Error performing operation: {e}'
             log.error(msg)
-        self.close_db()
         return result
-
-    def get_db(self):
-        if "db" not in g:
-            log.info("Connecting to database")
-            engine = create_engine(
-                f"mysql+pymysql://{self.MYSQL_DB_USER}:{self.MYSQL_DB_PASSWORD}@{self.MYSQL_DB_HOST}:{self.MYSQL_DB_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4",
-                pool_pre_ping=True,
-            )
-            g.db = engine.connect()
-
-            return g.db
-
-    def close_db(self, e = None):
-        log.info("close_db requested")
-        db = g.pop("db", e)
-        if db is not None:
-            log.info("Closing db connection")
-            db.close()
-        else:
-            log.info("db connection already closed. No action taken.")
