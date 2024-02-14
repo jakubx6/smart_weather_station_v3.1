@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from flask import Flask, abort, request
 from mysql import Mysql
 from logger import log
+import json
 
 app = Flask(__name__)
-mySql = Mysql()
 
 ESP_API_TOKEN = os.getenv('ESP_API_TOKEN')
 
@@ -13,15 +13,9 @@ ESP_API_TOKEN = os.getenv('ESP_API_TOKEN')
 def esp():
     log.info('Run /esp')
 
+    mySql = Mysql()
     buff = request.data.decode('utf-8')
     log.debug(buff)
-
-    lines = buff.split('\n')
-    delta = len(lines)
-    for iter in range(delta):
-        time = datetime.now() - timedelta(minutes = iter)
-        lines[delta - iter - 1] = lines[delta - iter - 1].replace('{', '{\"date\": \"' +  str(time) +  '\", ')
-        print(lines[delta - iter - 1])
 
     if 'token' not in request.headers:
         log.error('No header')
@@ -30,10 +24,19 @@ def esp():
         log.error('Invalid token: ' + request.headers['token'])
         abort(401)
     else:
+        log.info('Add timestamp')
+        lines = buff.split('\n')
+        delta = len(lines)
+        time = datetime.now() + timedelta(hours = 1)
+        for iter in range(delta):
+            if iter and not iter % 2:
+                time = time - timedelta(minutes = 1)
+            lines[delta - iter - 1] = lines[delta - iter - 1].replace('{', '{\"date\": \"' +  str(time) +  '\", ')
+
         log.info('Insert data to DB')
         for line in lines:
-            print(line)
-            if not mySql.tryToInsert(eval(line)):
+            log.debug(line)
+            if not mySql.tryToInsert(json.loads(line)):
                 log.error('Database error')
                 abort(422)
     return "xD"
@@ -46,6 +49,7 @@ def result():
 def health():
     log.info('Checking /health')
 
+    mySql = Mysql()
     result = mySql.tryToSelect()
     result = result.one()
 
