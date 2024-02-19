@@ -30,22 +30,22 @@ class Mysql:
     )
 
     def __init__(self):
-        if "db" not in g:
-            log.info("Connecting to database")
+        if 'db' not in g:
+            log.info('Connecting to database')
             engine = create_engine(
-                f"mysql+pymysql://{self.MYSQL_DB_USER}:{self.MYSQL_DB_PASSWORD}@{self.MYSQL_DB_HOST}:{self.MYSQL_DB_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4",
+                f'mysql+pymysql://{self.MYSQL_DB_USER}:{self.MYSQL_DB_PASSWORD}@{self.MYSQL_DB_HOST}:{self.MYSQL_DB_PORT}/{self.MYSQL_DB_NAME}?charset=utf8mb4',
                 pool_pre_ping=True,
             )
             g.db = engine.connect()
 
     def __del__(self):
-        log.info("close_db requested")
+        log.info('Close_db requested')
         db = g.pop("db", None)
         if db is not None:
-            log.info("Closing db connection")
+            log.info('Closing db connection')
             db.close()
         else:
-            log.info("db connection already closed. No action taken.")
+            log.info('Db connection already closed. No action taken')
 
     def tryToSelect(self, query = 'SELECT NOW()'):
         return self.tryTemplate(self.SELECT, query)

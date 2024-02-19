@@ -43,7 +43,13 @@ def esp():
 
 @app.route('/result', methods=['GET'])
 def result():
-    abort(404)
+    log.info('Checking /result')
+
+    mySql = Mysql()
+    result = mySql.tryToSelect('SELECT * FROM MEASUREMENT WHERE ID IN (SELECT MAX(ID) FROM MEASUREMENT)')
+    result = result.one()
+
+    return str(result)
 
 @app.route('/health', methods=['GET'])
 def health():
